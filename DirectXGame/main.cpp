@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成   //test
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"LE2C_05_ウノ_リュウト_AL3");
+	win->CreateGameWindow(L"LE2C_05_ウノ_リュウト");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -43,8 +43,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	TextureManager::Load("white1x1.png");
 
-	Sprite* sprite = nullptr;
-	sprite = 0;
 	// スプライト静的初期化
 	Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::kWindowWidth, WinApp::kWindowHeight);
 
