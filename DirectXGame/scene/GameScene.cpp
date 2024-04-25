@@ -1,9 +1,8 @@
 #include "GameScene.h"
+#include "AxisIndicator.h"
+#include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
-#include "PrimitiveDrawer.h"
-#include "AxisIndicator.h"
-
 
 GameScene::GameScene() {}
 
@@ -27,20 +26,18 @@ void GameScene::Initialize() {
 
 	// サウンドデータ
 	soundDataHandle = audio_->LoadWave("fanfare.wav");
-	//audio再生
-	//audio_->PlayWave(soundDataHandle);
+	// audio再生
+	// audio_->PlayWave(soundDataHandle);
 
-	//voiceHandle = audio_->PlayWave(soundDataHandle, true);
+	// voiceHandle = audio_->PlayWave(soundDataHandle, true);
 
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection);
-	//デバッグカメラ
+	// デバッグカメラ
 	debugCamera = new DebugCamera(100, 100);
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera->GetViewProjection());
-
-
 }
 
 void GameScene::Update() {
@@ -53,25 +50,22 @@ void GameScene::Update() {
 	// ===スプライト動かす処理===
 
 	if (input_->TriggerKey(DIK_SPACE)) {
-	
+
 		audio_->StopWave(voiceHandle);
 	}
 #ifdef DEBUG
 
-
-
 	ImGui::Begin("Debug1");
-	//float3入力ボックス
+	// float3入力ボックス
 	ImGui::InputFloat3("InputFloat3", inputFloat3);
-	//float3スライダー
-	ImGui::SliderFloat3("SliderFloat3",inputFloat3,0.0f,1.0f);
-	//ImGui::ShowDemoWindow();
-	
+	// float3スライダー
+	ImGui::SliderFloat3("SliderFloat3", inputFloat3, 0.0f, 1.0f);
+	// ImGui::ShowDemoWindow();
+
 	ImGui::End();
 #endif
 
 	debugCamera->Update();
-
 }
 
 void GameScene::Draw() {
@@ -83,10 +77,14 @@ void GameScene::Draw() {
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(commandList);
 
-	//ラインを描画する
-	PrimitiveDrawer::GetInstance()->DrawLine3d({0,0,0,}, {0,10,0}, {1.0f,5.0f,0.0f,1.0f});
-
-	
+	// ラインを描画する
+	PrimitiveDrawer::GetInstance()->DrawLine3d(
+	    {
+	        0,
+	        0,
+	        0,
+	    },
+	    {0, 10, 0}, {1.0f, 5.0f, 0.0f, 1.0f});
 
 	Model::PostDraw();
 	/// <summary>
@@ -106,11 +104,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	//model->Draw(worldTransform, viewProjection, textureHandle);
-	
+	// model->Draw(worldTransform, viewProjection, textureHandle);
+
 	model->Draw(worldTransform, debugCamera->GetViewProjection(), textureHandle);
-	
-	
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
