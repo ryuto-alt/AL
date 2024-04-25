@@ -4,16 +4,36 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	delete model;
+	delete player;
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	textureHandle = TextureManager::Load("mario.jpg");
+
+	model = Model::Create();
+
+	worldTransform.Initialize();
+	viewProjection.Initialize();
+
+	// 自キャラの作成
+	player = new Player();
+
+	// 自キャラの初期化
+	player->Initialize(model, textureHandle, &viewProjection);
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+
+	// 自キャラの更新
+	player->Update();
+}
 
 void GameScene::Draw() {
 
@@ -41,7 +61,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-
+	// 自キャラの描画
+	player->Draw();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
