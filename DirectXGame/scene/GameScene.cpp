@@ -11,9 +11,21 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	textureHandle_ = TextureManager::Load("mario.jpg");
+
+	soundHandle_ = audio_->LoadWave("mario.mp3");
+	//音楽再生
+	audio_->PlayWave(soundHandle_);
+	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+
+
+
+
+}
 
 void GameScene::Draw() {
 
@@ -53,6 +65,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	/// 
+	sprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
