@@ -14,8 +14,11 @@
 /// </summary>
 class Audio {
 public:
+
+
 	// サウンドデータの最大数
 	static const int kMaxSoundData = 256;
+
 
 	// 音声データ
 	struct SoundData {
@@ -32,6 +35,9 @@ public:
 		uint32_t handle = 0u;
 		IXAudio2SourceVoice* sourceVoice = nullptr;
 	};
+
+
+
 
 	/// <summary>
 	/// オーディオコールバック
@@ -54,6 +60,14 @@ public:
 		// ボイスの実行エラー時
 		STDMETHOD_(void, OnVoiceError)
 		([[maybe_unused]] THIS_ void* pBufferContext, [[maybe_unused]] HRESULT Error){};
+
+		/// <summary>
+		/// 音楽データを取得
+		/// </summary>
+		/// <param name="soundDataHandle">サウンドデータハンドル</param>
+		/// <returns>音楽データバッファ</returns>
+		const std::vector<uint8_t>& GetAudioData(uint32_t soundDataHandle) const;
+
 	};
 
 	static Audio* GetInstance();
