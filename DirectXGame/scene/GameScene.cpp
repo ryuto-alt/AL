@@ -10,7 +10,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() { delete sprite_; }
 
 void GameScene::Initialize() {
-	dxCommon_ = DirectXCommon::GetInstance();
+	dxCommon_ = DirectXComamon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	textureHandle_ = TextureManager::Load("mario.jpg");
