@@ -35,7 +35,7 @@ std::vector<float> LoadPCMData(const std::string& filename) {
 using namespace std;
 
 const int SAMPLE_RATE = 44100; // サンプリング周波数
-const int WINDOW_SIZE = 512;  // サンプリングウィンドウサイズ
+const int WINDOW_SIZE = 512;   // サンプリングウィンドウサイズ
 
 GameScene::GameScene() {}
 
@@ -53,52 +53,44 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	Vector2 position = sprite_->GetPosition();
-	bool moveSprite = false;
+	static bool isMoving = false; // スプライトの動きを制御する静的変数
+
 	double high_freq_threshold = 10.0; // 500Hz
-	double amplitude_threshold = 0.1;   // 振幅の閾値
-	double maxAmplitude = 0.0;
-	int maxIndex = 0;
+	double amplitude_threshold = 0.1;  // 振幅の閾値
 
 	// FFTの実行
-	fftw_complex *in, *out;
-	fftw_plan p;
-	const int N = WINDOW_SIZE;
-	in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * N);
-	out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * N);
-	p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-
+	fftw_complex* in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+	fftw_complex* out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+	fftw_plan p = fftw_plan_dft_1d(WINDOW_SIZE, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 	// PCMデータの読み込みとFFTの実行
 	std::vector<float> pcmData = LoadPCMData("mario.wav");
-	for (int i = 0; i < N && i < pcmData.size(); i++) {
+	for (int i = 0; i < WINDOW_SIZE && i < pcmData.size(); i++) {
 		in[i][0] = pcmData[i];
-		in[i][1] = 0.0;
+		in[i][1] = 0.0; // 虚数部は0
 	}
-
 
 	fftw_execute(p);
 
 	// FFT結果の解析
-	for (int i = 0; i <= N / 2; i++) {
-		double freq = i * SAMPLE_RATE / N;
-		double amplitude = sqrt(out[i][0] * out[i][0] + out[i][1] * out[i][1]);
-		if (amplitude > maxAmplitude) {
-			maxAmplitude = amplitude;
-			maxIndex = i;
-		}
-		if (freq > high_freq_threshold && amplitude > amplitude_threshold) {
-			moveSprite = true;
-		}
+	high_freq_threshold = 2000.0; // 2kHz以上を高周波数と定義
+	amplitude_threshold = 0.1;    // 振幅の閾値
+	bool highFrequencyDetected = false;
+
+	if (highFrequencyDetected) {
+		isMoving = true; // 高周波数が検出されたら移動を開始または継続
+	} else {
+		isMoving = false; // 条件を満たさない場合は移動を停止
 	}
 
 	// デバッグ情報の出力
 	ImGui::Begin("Debug Info");
-	ImGui::Text("Max Amplitude: %.5f at %f Hz", maxAmplitude, maxIndex * SAMPLE_RATE / N);
-	ImGui::Text("moveSprite: %s", moveSprite ? "true" : "false");
+	ImGui::Text("High Frequency Detected: %s", highFrequencyDetected ? "true" : "false");
+	ImGui::Text("Sprite Moving: %s", isMoving ? "true" : "false");
 	ImGui::End();
 
-	// スプライトの移動
-	if (moveSprite) {
-		position.x += 5.0f;
+	 // スプライトの移動
+	if (isMoving) {
+		position.x += 5.0f; // X方向に5ピクセル移動
 		sprite_->SetPosition(position);
 	}
 
@@ -143,6 +135,4 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 #pragma endregion
-
-	
 }

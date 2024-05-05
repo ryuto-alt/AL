@@ -51,7 +51,7 @@ private: // メンバ変数
 	uint32_t soundDataHandle_ = 0;
 
 	  std::vector<float> waveform; // 波形データ
-
+	bool isSpriteMoved;          // 新しいメンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
