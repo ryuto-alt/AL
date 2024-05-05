@@ -17,6 +17,8 @@ public:
 	// サウンドデータの最大数
 	static const int kMaxSoundData = 256;
 
+	std::vector<float> GetWaveData(uint32_t handle);
+	std::string GetFilePathFromHandle(uint32_t handle);
 	// 音声データ
 	struct SoundData {
 		// 波形フォーマット
