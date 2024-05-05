@@ -8,6 +8,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -48,6 +49,9 @@ private: // メンバ変数
 	Sprite* sprite_ = nullptr;
 
 	uint32_t soundDataHandle_ = 0;
+
+	  std::vector<float> waveform; // 波形データ
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
