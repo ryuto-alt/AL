@@ -7,8 +7,10 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include<vector>
 #include "Player.h"
+#include"DebugCamera.h"
+//#include"Matrix.h"
 
 /// <summary>
 /// ゲームシーン
@@ -47,15 +49,19 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	uint32_t textureHandle = 0;
-	Model* model = nullptr;
+	Model* modelBlock_ = nullptr;
 
 	// ワールドトランスフォーム
 	WorldTransform worldTransform;
 	// ビュープロジェクション
 	ViewProjection viewProjection;
-
+	std::vector < std::vector<WorldTransform* > >worldTransformBlocks_;
 	Player* player = nullptr;
 
+	bool isDebugCameraActive_ = true;
+	DebugCamera* debugCamera_ = nullptr;
+
+	
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

@@ -3,7 +3,7 @@
 
 void Player::Initialize(Model* model_, uint32_t textureHandle_, ViewProjection* viewProjection_) {
 
-	assert(model);
+	/*assert(model);*/
 	// メンバ変数にデータを記録
 	model = model_;
 	textureHandle = textureHandle_;
