@@ -166,7 +166,7 @@ void GameScene::Draw() {
 			if (!worldTransformBlockYoko)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);
+			/*modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);*/
 		}
 	}
 
