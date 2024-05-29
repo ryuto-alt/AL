@@ -1,14 +1,12 @@
 #include "GameScene.h"
-#include "Matrix.h"
-#include "Matrix4x4.h"
 #include "TextureManager.h"
-#include "Vector3.h"
+#include "matrix.h"
 #include <cassert>
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	delete modelBlock_;
-	delete player;
+	delete model_;
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -17,7 +15,10 @@ GameScene::~GameScene() {
 	}
 
 	worldTransformBlocks_.clear();
+
 	delete debugCamera_;
+
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -26,92 +27,101 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	textureHandle = TextureManager::Load("mario.jpg");
-
+	// ファイル名を指定してテクスチャを読み込む
+	textureHandle_ = TextureManager::Load("block.jpg");
+	// 3Dモデルの生成
+	model_ = Model::Create();
 	modelBlock_ = Model::Create();
+	// ワールドトランスフォームの初期化
+	worldTransform_.Initialize();
+	// ビュープロジェクションの初期化
+	viewProjection_.Initialize();
 
-	worldTransform.Initialize();
-	viewProjection.Initialize();
-
-	// 自キャラの作成
-	player = new Player();
-
+	// 自キャラの生成
+	player_ = new Player();
 	// 自キャラの初期化
-	player->Initialize(modelBlock_, textureHandle, &viewProjection);
+	player_->Initialize(model_, textureHandle_, &viewProjection_);
 
-	debugCamera_ = new DebugCamera(1280, 720);
+	// 天球の生成
+	skydome_ = new Skydome();
+	// 天球3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
+
 	// 要素数
 	const uint32_t kNumBlockVirtical = 10;
 	const uint32_t kNumBlockHorizontal = 20;
-
-	// ブロック一個分の横幅
+	// ブロック1個分の横幅
 	const float kBlockWidth = 2.0f;
 	const float kBlockHeight = 2.0f;
-
 	// 要素数を変更する
 	worldTransformBlocks_.resize(kNumBlockVirtical);
 
+	// キューブの生成
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
 	}
 
-	// ブロックの生成
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			// Create holes by skipping every other block
-			if ((i + j) % 2 == 0) {
+			if (j % 2 == (i % 2)) {
 				worldTransformBlocks_[i][j] = new WorldTransform();
 				worldTransformBlocks_[i][j]->Initialize();
 				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
 				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
 			} else {
-				// Set the block to nullptr to indicate a hole
 				worldTransformBlocks_[i][j] = nullptr;
 			}
 		}
 	}
+
+	// デバッグカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
 }
 
 void GameScene::Update() {
 
-	// 自キャラの更新
-	player->Update();
-
-	Vector3 scale = {1.2f, 0.79f, -2.1f};
-	Vector3 rotate = {0.4f, 1.43f, -0.8f};
-	Vector3 translate = {2.7f, -4.15f, 1.57f};
-
-	debugCamera_->Update();
-
 #ifdef _DEBUG
-
-	if (input_->TriggerKey(DIK_F1)) {
-		isDebugCameraActive_ = true;
-
+	if (input_->TriggerKey(DIK_SPACE)) {
+		if (isDebugCameraActive_ == true)
+			isDebugCameraActive_ = false;
+		else
+			isDebugCameraActive_ = true;
 	}
-		if (isDebugCameraActive_) {
+#endif
 
-			viewProjection.matView = debugCamera_->GetViewProjection().matView; // デバッグカメラのビュー行列
-			viewProjection.matProjection = debugCamera_->GetViewProjection().matProjection;   // デバッグカメラのプロジェクション行列
-		
-			viewProjection.TransferMatrix();
-		} else {
-		
-		
-		viewProjection.UpdateMatrix();
-		}
-	
+	// カメラ処理
+	if (isDebugCameraActive_) {
+		// デバッグカメラの更新
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
+	} else {
+		// ビュープロジェクション行列の更新と転送
+		viewProjection_.UpdateMatrix();
+	}
 
-#endif // DEBUG
+	// 自キャラの更新
+	player_->Update();
 
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock)
+	// 天球の更新
+	skydome_->Update();
+
+	// 縦横ブロック更新
+	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
+			if (!worldTransformBlockYoko)
 				continue;
 
-			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+			// アフィン変換行列の作成
+			//(MakeAffineMatrix：自分で作った数学系関数)
+			worldTransformBlockYoko->matWorld_ = MakeAffineMatrix(worldTransformBlockYoko->scale_, worldTransformBlockYoko->rotation_, worldTransformBlockYoko->translation_);
 
-			worldTransformBlock->TransferMatrix();
+			// 定数バッファに転送
+			worldTransformBlockYoko->TransferMatrix();
 		}
 	}
 }
@@ -142,16 +152,24 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	// 3Dモデル描画
+	//	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	// 自キャラの描画
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock)
+	//	player_->Draw();
+
+	// 天球の描画
+	skydome_->Draw();
+
+	// 縦横ブロック描画
+	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
+			if (!worldTransformBlockYoko)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlock, viewProjection);
+			modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);
 		}
 	}
-	/*player->Draw();*/
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
