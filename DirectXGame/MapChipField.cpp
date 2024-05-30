@@ -16,7 +16,7 @@ std::map<std::string, MapChipType> MapChipTable = {
 void MapChipField::ResetMapChipData() {
 	mapChipData_.data.clear();
 	mapChipData_.data.resize(kNumBlockVirtical);
-	for (std::vector<MapChipType>& mapChipDataLine : mapChipData_.data) {
+	for (auto& mapChipDataLine : mapChipData_.data) { // auto& に変更
 		mapChipDataLine.resize(kNumBlockHorizontal);
 	}
 }
@@ -34,7 +34,7 @@ void MapChipField::LoadMapChipCsv(const std::string& filepath) {
 	// CSVからマップチップデータを読み込む
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		std::string line;
-		getline(mapChipCsv, line); // 修正
+		getline(mapChipCsv, line);
 
 		// 1行分の文字列をストリームに変換して解析しやすくする
 		std::istringstream line_stream(line);
@@ -51,13 +51,17 @@ void MapChipField::LoadMapChipCsv(const std::string& filepath) {
 }
 
 MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
-	if (xIndex < 0 || kNumBlockHorizontal - 1 < xIndex) {
+	if (xIndex >= kNumBlockHorizontal) {
 		return MapChipType::kBlank;
 	}
-	if (yIndex < 0 || kNumBlockVirtical - 1 < yIndex) {
+	if (yIndex >= kNumBlockVirtical) {
 		return MapChipType::kBlank;
 	}
 	return mapChipData_.data[yIndex][xIndex];
 }
 
 Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVirtical - 1 - yIndex), 0); }
+
+uint32_t MapChipField::GetNumBlockVirtical() const { return kNumBlockVirtical; }
+
+uint32_t MapChipField::GetNumBlockHorizontal() const { return kNumBlockHorizontal; }

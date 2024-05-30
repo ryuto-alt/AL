@@ -1,8 +1,17 @@
 #pragma once
+#include <Vector3.h>
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <Vector3.h>
+
+enum class MapChipType {
+	kBlank,
+	kBlock,
+};
+
+struct MapChipData { // クラスを struct に変更し、追加
+	std::vector<std::vector<MapChipType>> data;
+};
 
 class MapChipField {
 public:
@@ -14,19 +23,13 @@ public:
 
 	MapChipData mapChipData_;
 
-	void LoadMapChipCsv(const std::string& filepath);                    // 宣言を追加
-	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex); // 宣言を追加
-	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex); // 宣言を追加
+	void LoadMapChipCsv(const std::string& filepath);
+	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
+	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+
+	uint32_t GetNumBlockVirtical() const;
+	uint32_t GetNumBlockHorizontal() const;
 
 private:
-	void ResetMapChipData(); // ResetMapChipData関数の宣言を追加
-};
-
-enum class MapChipType {
-	kBlank,
-	kBlock,
-};
-
-struct MapChipData {
-	std::vector<std::vector<MapChipType>> data;
+	void ResetMapChipData();
 };

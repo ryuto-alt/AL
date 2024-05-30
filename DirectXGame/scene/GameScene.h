@@ -1,16 +1,16 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "MapChipField.h" // 追加
 #include "Model.h"
+#include "Player.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include<vector>
-#include "Player.h"
-#include"DebugCamera.h"
-//#include"Matrix.h"
+#include <vector>
 
 /// <summary>
 /// ゲームシーン
@@ -43,6 +43,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void GenerateBlocks();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -55,13 +57,13 @@ private: // メンバ変数
 	WorldTransform worldTransform;
 	// ビュープロジェクション
 	ViewProjection viewProjection;
-	std::vector < std::vector<WorldTransform* > >worldTransformBlocks_;
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 	Player* player = nullptr;
 
 	bool isDebugCameraActive_ = true;
 	DebugCamera* debugCamera_ = nullptr;
+	MapChipField* mapChipField_; // 追加
 
-	
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
