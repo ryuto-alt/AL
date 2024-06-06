@@ -1,18 +1,14 @@
 #include "GameScene.h"
-#include "MapChipField.h"
-#include "Matrix.h"
-#include "Matrix4x4.h"
 #include "TextureManager.h"
-#include "Vector3.h"
 #include <cassert>
+#include <Matrix.h>
 
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	delete modelBlock_;
-	delete player;
+	delete model_;
 	delete mapChipField_;
-
+	delete player_;
 	for (auto& worldTransformBlockLine : worldTransformBlocks_) {
 		for (auto& worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -29,32 +25,33 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	textureHandle = TextureManager::Load("mario.jpg");
+	// ファイル名を指定してテクスチャを読み込む
+	textureHandle_ = TextureManager::Load("mario.jpg");
+	// 3Dモデルの生成
+	model_ = Model::Create();
+	// ワールドトランスフォームの初期化
+	worldTransform_.Initialize();
+	// ビュープロジェクションの初期化
+	viewProjection_.Initialize();
 
-	modelBlock_ = Model::Create();
-
-	worldTransform.Initialize();
-	viewProjection.Initialize();
-
-	// 自キャラの作成
-	player = new Player();
-
+	// 自キャラの生成
+	player_ = new Player();
 	// 自キャラの初期化
-	player->Initialize(modelBlock_, textureHandle, &viewProjection);
+	player_->Initialize(model_, textureHandle_, &viewProjection_);
+
 
 	debugCamera_ = new DebugCamera(1280, 720);
-
 	// ブロックの生成
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 
 	GenerateBlocks();
+
 }
 
 void GameScene::Update() {
-
 	// 自キャラの更新
-	player->Update();
+	player_->Update();
 
 	Vector3 scale = {1.2f, 0.79f, -2.1f};
 	Vector3 rotate = {0.4f, 1.43f, -0.8f};
@@ -62,23 +59,24 @@ void GameScene::Update() {
 
 	debugCamera_->Update();
 
-#ifdef _DEBUG
+	#ifdef _DEBUG
 
 	if (input_->TriggerKey(DIK_F1)) {
 		isDebugCameraActive_ = true;
 	}
 	if (isDebugCameraActive_) {
 
-		viewProjection.matView = debugCamera_->GetViewProjection().matView;             // デバッグカメラのビュー行列
-		viewProjection.matProjection = debugCamera_->GetViewProjection().matProjection; // デバッグカメラのプロジェクション行列
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;             // デバッグカメラのビュー行列
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection; // デバッグカメラのプロジェクション行列
 
-		viewProjection.TransferMatrix();
+		viewProjection_.TransferMatrix();
 	} else {
 
-		viewProjection.UpdateMatrix();
+		viewProjection_.UpdateMatrix();
 	}
 
 #endif // DEBUG
+
 
 	for (auto& worldTransformBlockLine : worldTransformBlocks_) {
 		for (auto& worldTransformBlock : worldTransformBlockLine) {
@@ -118,16 +116,23 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	// 3Dモデル描画
+	//	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	// 自キャラの描画
+	/*player_->Draw();*/
+
+
 	for (auto& worldTransformBlockLine : worldTransformBlocks_) {
 		for (auto& worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlock, viewProjection);
+			model_->Draw(*worldTransformBlock, viewProjection_);
+		
 		}
 	}
-	// player->Draw(); // コメントアウト
+	
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

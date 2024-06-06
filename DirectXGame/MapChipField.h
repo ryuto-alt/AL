@@ -1,5 +1,5 @@
 #pragma once
-#include <Vector3.h>
+#include "Vector3.h"
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -9,7 +9,7 @@ enum class MapChipType {
 	kBlock,
 };
 
-struct MapChipData { // クラスを struct に変更し、追加
+struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;
 };
 

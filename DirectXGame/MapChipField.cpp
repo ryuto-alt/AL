@@ -12,11 +12,10 @@ std::map<std::string, MapChipType> MapChipTable = {
 };
 }
 
-// リセット
 void MapChipField::ResetMapChipData() {
 	mapChipData_.data.clear();
 	mapChipData_.data.resize(kNumBlockVirtical);
-	for (auto& mapChipDataLine : mapChipData_.data) { // auto& に変更
+	for (auto& mapChipDataLine : mapChipData_.data) {
 		mapChipDataLine.resize(kNumBlockHorizontal);
 	}
 }
@@ -31,12 +30,9 @@ void MapChipField::LoadMapChipCsv(const std::string& filepath) {
 	mapChipCsv << file.rdbuf();
 	file.close();
 
-	// CSVからマップチップデータを読み込む
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		std::string line;
 		getline(mapChipCsv, line);
-
-		// 1行分の文字列をストリームに変換して解析しやすくする
 		std::istringstream line_stream(line);
 
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {

@@ -1,25 +1,27 @@
 #include "Player.h"
 #include <cassert>
 
-void Player::Initialize(Model* model_, uint32_t textureHandle_, ViewProjection* viewProjection_) {
+void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* viewProjection) {
 
-	/*assert(model);*/
-	// メンバ変数にデータを記録
-	model = model_;
-	textureHandle = textureHandle_;
+	// NULLチェック
+	assert(model);
 
-	worldTransform.Initialize();
+	worldTransform_.Initialize();
 
-	viewProjection = viewProjection_;
-
-	debugCamera_ = new DebugCamera(100, 100);
+	// 引数の内容をメンバ変数に記録
+	model_ = model;
+	textureHandle_ = textureHandle;
+	viewProjection_ = viewProjection;
 }
 
 void Player::Update() {
 
-	worldTransform.TransferMatrix();
-
-	debugCamera_->Update();
+	// 行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
 }
 
-void Player::Draw() { model->Draw(worldTransform, debugCamera_->GetViewProjection(), textureHandle); }
+void Player::Draw() {
+
+	// 3Dモデルを描画
+	model_->Draw(worldTransform_, *viewProjection_, textureHandle_);
+}
