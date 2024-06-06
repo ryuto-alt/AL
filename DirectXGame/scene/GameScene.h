@@ -1,15 +1,15 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "MapChipField.h"
 #include "Model.h"
 #include "Player.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include"MapChipField.h"
-#include "DebugCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -42,8 +42,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-
-
 	void GenerateBlocks();
 
 private: // メンバ変数
@@ -58,6 +56,8 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	// 3Dモデル
 	Model* model_ = nullptr;
+	Model* modelBlock_ = nullptr;
+
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
@@ -66,10 +66,11 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 	DebugCamera* debugCamera_ = nullptr;
-	
+
 	MapChipField* mapChipField_; // 追加
 
-
 	bool isDebugCameraActive_ = true;
-	
+
+	void DrawMap();
+	void DrawPlayer();
 };
