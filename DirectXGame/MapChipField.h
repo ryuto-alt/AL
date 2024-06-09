@@ -1,12 +1,14 @@
-#pragma once
+﻿#pragma once
+
 #include "Vector3.h"
-#include <cstdint>
+#include <assert.h>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
 enum class MapChipType {
-	kBlank,
-	kBlock,
+		kBlank, // 空白
+		kBlock, // ブロック
 };
 
 struct MapChipData {
@@ -14,22 +16,23 @@ struct MapChipData {
 };
 
 class MapChipField {
+
 public:
-	static inline const float kBlockWidth = 1.0f;
-	static inline const float kBlockHeight = 1.0f;
-
-	static inline const uint32_t kNumBlockVirtical = 20;
-	static inline const uint32_t kNumBlockHorizontal = 100;
-
-	MapChipData mapChipData_;
-
-	void LoadMapChipCsv(const std::string& filepath);
+	void ResetMapChipData();
+	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
-	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+	Vector3 GetMapChipPostionByIndex(uint32_t xIndex, uint32_t yIndex);
 
 	uint32_t GetNumBlockVirtical() const;
 	uint32_t GetNumBlockHorizontal() const;
 
 private:
-	void ResetMapChipData();
+	// 1ブロックのサイズ
+	static inline const float kBlockWidth = 2.0f;
+	static inline const float kBlockHeight = 2.0f;
+	// ブロック個数
+	static inline const uint32_t kNumBlockVirtical = 20;
+	static inline const uint32_t kNumBlockHorizontal = 20;
+
+	MapChipData mapChipData_;
 };
