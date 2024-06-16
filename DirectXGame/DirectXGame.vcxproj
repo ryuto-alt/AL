@@ -107,15 +107,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2d\ImGuiManager.cpp" />
+    <ClCompile Include="3d\WorldTransformEX.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
-    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
-    <ClCompile Include="WorldTransformEx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -128,6 +128,7 @@
     <ClInclude Include="3d\Material.h" />
     <ClInclude Include="3d\Mesh.h" />
     <ClInclude Include="3d\Model.h" />
+    <ClInclude Include="3d\ObjectColor.h" />
     <ClInclude Include="3d\PointLight.h" />
     <ClInclude Include="3d\PrimitiveDrawer.h" />
     <ClInclude Include="3d\SpotLight.h" />
@@ -137,20 +138,22 @@
     <ClInclude Include="3d\WorldTransform.h" />
     <ClInclude Include="audio\Audio.h" />
     <ClInclude Include="base\DirectXCommon.h" />
-    <ClInclude Include="base\SafeDelete.h" />
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="input\Input.h" />
+    <ClInclude Include="LerpFunction.h" />
     <ClInclude Include="MapChipField.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="math\Vector2.h" />
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="math\Vector4.h" />
-    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="MatrixMath.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">

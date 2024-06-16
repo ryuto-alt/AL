@@ -1,9 +1,12 @@
-﻿#pragma once
-#include <Model.h>
-#include "WorldTransform.h"
-#include "Viewprojection.h"
-class Skydome {
+#pragma once
 
+#include "Model.h"          //モデル用のヘッダーファイル
+#include "WorldTransform.h" //ワールド変換データのヘッダーファイル
+
+/// <summary>
+/// 天球
+/// </summary>
+class Skydome {
 public:
 	/// <summary>
 	/// 初期化
@@ -11,7 +14,7 @@ public:
 	void Initialize(Model* model, ViewProjection* viewProjection);
 
 	/// <summary>
-	/// 毎フレーム処理
+	/// 更新
 	/// </summary>
 	void Update();
 
@@ -21,9 +24,12 @@ public:
 	void Draw();
 
 private:
-	//ワールド変換データ
+	// ワールド変換データ
 	WorldTransform worldTransform_;
-	ViewProjection* viewProjection_ = nullptr;
-	//モデル
+	// モデル
 	Model* model_ = nullptr;
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0u;
+	// ビュープロジェクション
+	ViewProjection* viewProjection_ = nullptr;
 };

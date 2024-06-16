@@ -1,21 +1,17 @@
 #pragma once
 
 #include "Audio.h"
+#include "CameraController.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "MapChipField.h"
 #include "Model.h"
-#include "SafeDelete.h"
 #include "Player.h"
 #include "Skydome.h"
 #include "Sprite.h"
-#include "Matrix4x4.h"
-#include "Vector3.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
-#include <cmath>
 #include <vector>
 
 /// <summary>
@@ -40,11 +36,6 @@ public: // メンバ関数
 	void Initialize();
 
 	/// <summary>
-	/// ブロックの表示
-	/// </summary>
-	void GenerateBlocks();
-
-	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
@@ -54,49 +45,50 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	// x軸回転行列
-	Matrix4x4 MakeRotateXMatrix(float radian);
-
-	// y軸回転行列
-	Matrix4x4 MakeRotateYMatrix(float radian);
-
-	// z軸回転行列
-	Matrix4x4 MakeRotateZMatrix(float radia);
-
-	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-
-	// ３次元アフィン変換行列
-	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-
+	void GenerateBlocks();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
-	// 自キャラ
-	Player* player_ = nullptr;
+	// 3Dモデル
 	Model* model_ = nullptr;
+	Model* modelBlock_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+
+	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
-	// 縦横ブロック配列
-	Model* modelBlock_ = nullptr;
+	// ワールドトランスフォーム
+	WorldTransform worldTransform_;
+
+	// 自キャラ
+	Player* player_ = nullptr;
+	Player* block_ = nullptr;
+
+	// スカイドーム
+	Skydome* skydome_ = nullptr;
+
+	// カメラコントローラ
+	CameraController* cameraController_ = nullptr;
+
+	// ベクトル
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
-	// デバッグカメラ
+	// デバッグカメラの有効
 	bool isDebugCameraActive_ = false;
-	DebugCamera* debugCamera_ = nullptr;
 
-	//天球
-	Skydome* skydome_ = nullptr;
-	Model* modelSkydome_ = nullptr;
+	// デバッグカメラ
+	DebugCamera* debugCamera_ = nullptr;
 
 	// マップチップフィールド
 	MapChipField* mapChipField_;
+
+	/// <summary>
+	/// ゲームシーン用
+	/// </summary>
 };

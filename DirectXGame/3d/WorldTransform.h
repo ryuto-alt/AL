@@ -2,7 +2,6 @@
 
 #include "Matrix4x4.h"
 #include "Vector3.h"
-#include <cmath>
 #include <d3d12.h>
 #include <type_traits>
 #include <wrl.h>
@@ -56,7 +55,6 @@ public:
 	/// 行列を計算・転送する
 	/// </summary>
 	void UpdateMatrix();
-
 
 private:
 	// 定数バッファ
