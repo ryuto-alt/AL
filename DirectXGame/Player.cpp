@@ -1,10 +1,19 @@
 #define NOMINMAX
 #include "Player.h"
-
+#include "MapChipField.h"
 #include <Input.h>
 #include <algorithm>
 #include <cassert>
 #include <numbers>
+
+// 角
+enum Corner {
+	kRightBottom, // 右下
+	kLeftBottom,  // 左下
+	kRightTop,    // 右上
+	kLeftTop,     // 左上
+	kNumCorner    // 要素数
+};
 
 // 初期化
 void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
@@ -32,8 +41,55 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 
 // 更新処理
 void Player::Update() {
+	/*-----①移動入力-----*/
+	Move();
+
+	/*-----②移動量を加味して衝突判定する-----*/
+	// 衝突情報を初期化
+	CollisionMapInfo collisionMapInfo;
+	// 移動量に速度の値をコピー
+	collisionMapInfo.move = velocity_;
+
+	// ②マップ衝突チェック
+	MapCollisionDetection(collisionMapInfo);
+
+	/*-----③判定結果を反映して移動させる-----*/
+	MoveReflectJudgmentResult(collisionMapInfo);
+
+	/*-----④天井に接触している場合の処理-----*/
+	TouchingCeiling(collisionMapInfo);
+
+	/*-----⑤壁に接触している場合の処理-----*/
+
+	/*-----⑥接地状態の切り替え-----*/
+
+	/*-----⑦旋回制御-----*/
+	TurningControl();
+	/*-----⑧行列計算-----*/
 	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	// worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
+}
+
+// 描画処理
+void Player::Draw() {
+	// 3Dモデルを描画
+	model_->Draw(worldTransform_, *viewProjection_);
+}
+
+// 関数化：指定した角の座標計算
+Vector3 CornerPosition(const Vector3& center, Corner corner) {
+	Vector3 offsetTable[kNumCorner] = {
+	    {+kWidth / 2.0f, -kHeight / 2.0f, 0},
+        {-kWidth / 2.0f, -kHeight / 2.0f, 0},
+        {+kWidth / 2.0f, +kHeight / 2.0f, 0},
+        {-kWidth / 2.0f, +kHeight / 2.0f, 0}
+    };
+	return center + offsetTable[static_cast<uint32_t>(corner)];
+}
+
+// ①移動処理
+void Player::Move() {
 	//-----移動入力-----//
 	// 接地状態
 	if (onGround_) {
@@ -136,7 +192,76 @@ void Player::Update() {
 			onGround_ = true;
 		}
 	}
+}
 
+// ②マップ衝突判定
+void Player::MapCollisionDetection(CollisionMapInfo& info) {
+	/*----------マップ衝突判定上方向（info）----------*/
+	// 上
+	if (info.move.y <= 0) {
+		return;
+	}
+
+	// 移動後の４つの角の座標
+	std::array<Vector3, kNumCorner> positionNew;
+	for (uint32_t i = 0; i < positionNew.size(); ++i) {
+		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
+	}
+
+	MapChipType mapChipType;
+	bool hit = false;
+
+	// 左上点の判定
+	// 移動後のプレイヤーの左上座標のマップチップ x, y番号を取得
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kLeftTop]);
+	// 移動後のプレイヤーの左上座標のマップチップの種類を取得
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	// 右上点の判定
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	// ブロックにヒットした場合の処理
+	if (hit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(0.0f, kHeight / 2, 0.0f));
+		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		float newY = rect.bottom - (worldTransform_.translation_.y + kHeight / 2.0f + kBlank);
+		info.move.y = std::max(0.0f, newY);
+		info.isCeiling = true;
+	}
+
+	/*----------マップ衝突判定下方向（info）----------*/
+
+	/*----------マップ衝突判定右方向（info）----------*/
+
+	/*----------マップ衝突判定左方向（info）----------*/
+}
+
+// ③判定結果を反映して移動させる
+void Player::MoveReflectJudgmentResult(CollisionMapInfo& info) {
+	// 衝突判定後の移動量を反映
+	worldTransform_.translation_ += info.move;
+}
+
+// ④天井に接触している場合の処理
+void Player::TouchingCeiling(CollisionMapInfo& info) {
+	// 天井に当たった？
+	if (info.isCeiling) {
+		OutputDebugString(L"hit");
+		// 上方向への速度をゼロにする
+		velocity_.y = 0;
+	}
+}
+
+// ⑦旋回制御
+void Player::TurningControl() {
 	// 旋回制御
 	if (turnTimer_ > 0.0f) {
 
@@ -153,17 +278,4 @@ void Player::Update() {
 		float interpolatedRotationY = Lerp(turnFirstRotationY_, destinationRotationY, t);
 		worldTransform_.rotation_.y = interpolatedRotationY;
 	}
-
-	// 移動
-	worldTransform_.translation_.x += velocity_.x;
-	worldTransform_.translation_.y += velocity_.y;
-
-	// 行列計算
-	worldTransform_.UpdateMatrix();
-}
-
-// 描画処理
-void Player::Draw() {
-	// 3Dモデルを描画
-	model_->Draw(worldTransform_, *viewProjection_);
 }

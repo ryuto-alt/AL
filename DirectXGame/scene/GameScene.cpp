@@ -13,7 +13,7 @@ GameScene::~GameScene() {
 
 	// 自キャラの解放
 	delete player_;
-
+	delete block_;
 	// スカイドームの解放
 	delete modelSkydome_;
 
@@ -60,33 +60,34 @@ void GameScene::Initialize() {
 	viewProjection_.translation_ = {0.0f, 0.0f, -20.0f};
 	viewProjection_.Initialize();
 
-	// 自キャラの生成
-	player_ = new Player();
-
 	// スカイドームの生成
 	skydome_ = new Skydome();
-
-	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
-
-	// 自キャラの初期化
-	player_->Initialize(model_, &viewProjection_, playerPosition);
-
-	// スカイドームの初期化
-	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
 	// マップチップの生成
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+
+	// 座標をマップチップ番号で指定
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+
+	// 自キャラの生成
+	player_ = new Player();
+	// 自キャラの初期化
+	player_->Initialize(model_, &viewProjection_, playerPosition);
+	// マップチップデータのセット
+	player_->SetMapChipField(mapChipField_);
+
+	// スカイドームの初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
 	// 表示ブロックの生成
 	GenerateBlocks();
 
 	// カメラコントローラの初期化
 	cameraController_->Initialize(&viewProjection_);
-	//追従対象をセット
+	// 追従対象をセット
 	cameraController_->SetTarget(player_);
-	//リセット（瞬間合わせ）
+	// リセット（瞬間合わせ）
 	cameraController_->Reset();
 }
 
@@ -192,7 +193,7 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// スカイドームの描画
-	/*skydome_->Draw();*/
+	skydome_->Draw();
 
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {

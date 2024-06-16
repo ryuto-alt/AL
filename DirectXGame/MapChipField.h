@@ -23,6 +23,14 @@ struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;
 };
 
+// 矩形範囲
+struct Rect {
+	float left;   // 左端
+	float right;  // 右端
+	float bottom; // 下端
+	float top;    // 上端
+};
+
 /// <summary>
 /// マップチップフィールド
 /// </summary>
@@ -37,6 +45,11 @@ class MapChipField {
 	MapChipData mapChipData_;
 
 public:
+	struct IndexSet {
+		uint32_t xIndex;
+		uint32_t yIndex;
+	};
+
 	/// <summary>
 	/// マップチップデータリセット
 	/// </summary>
@@ -66,4 +79,19 @@ public:
 	/// <param name="yIndex"></param>
 	/// <returns></returns>
 	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+
+	/// <summary>
+	/// 座標からマップチップ番号を計算
+	/// </summary>
+	/// <param name="position"></param>
+	/// <returns></returns>
+	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
+
+	/// <summary>
+	/// ブロックの範囲取得関数
+	/// </summary>
+	/// <param name="xIndex"></param>
+	/// <param name="yIndex"></param>
+	/// <returns></returns>
+	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 };

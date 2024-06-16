@@ -46,7 +46,7 @@ private:
 	// 速度掛け率
 	static inline const float kVelocityBias = 50.0f;
 	// 追従対象の各方向へのカメラ移動範囲
-	static inline const Rect margin = {-12,12, -20, 10};
+	static inline const Rect margin = {-12, 12, -20, 10};
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
