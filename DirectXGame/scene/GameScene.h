@@ -4,6 +4,7 @@
 #include "CameraController.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
+#include "Enemy.h"
 #include "Input.h"
 #include "MapChipField.h"
 #include "Model.h"
@@ -18,7 +19,6 @@
 /// ゲームシーン
 /// </summary>
 class GameScene {
-
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
@@ -57,6 +57,7 @@ private: // メンバ変数
 
 	// 3Dモデル
 	Model* model_ = nullptr;
+	Model* enemy_ = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 
@@ -69,6 +70,8 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 	Player* block_ = nullptr;
+
+	Enemy* charaEnemy_ = nullptr; // <- Add this line
 
 	// スカイドーム
 	Skydome* skydome_ = nullptr;

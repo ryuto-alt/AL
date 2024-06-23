@@ -10,6 +10,7 @@ GameScene::~GameScene() {
 	// モデルの解放
 	delete model_;
 	delete modelBlock_;
+	delete enemy_; // エネミーモデルの解放
 
 	// 自キャラの解放
 	delete player_;
@@ -33,10 +34,12 @@ GameScene::~GameScene() {
 		}
 	}
 	worldTransformBlocks_.clear();
+
+	// エネミーの解放
+	delete charaEnemy_; // エネミーの解放
 }
 
 void GameScene::Initialize() {
-
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -46,6 +49,8 @@ void GameScene::Initialize() {
 
 	// スカイドームの3Dモデルデータの生成
 	model_ = Model::CreateFromOBJ("player", true);
+	enemy_ = Model::CreateFromOBJ("enemy", true);
+
 	modelSkydome_ = Model::CreateFromOBJ("Skydome", true);
 	modelBlock_ = Model::CreateFromOBJ("RoseCube", true);
 
@@ -80,6 +85,13 @@ void GameScene::Initialize() {
 	// スカイドームの初期化
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
+	// エネミーの生成と初期化
+	charaEnemy_ = new Enemy();
+	// プレイヤーの位置と同じに設定し、少し右に移動させる
+	Vector3 enemyPosition = playerPosition + Vector3(6.0f, 0.0f, 0.0f);
+	Vector3 enemyDirection = Vector3(-0.05f, 0.0f, 0.0f); // 左方向に移動
+	charaEnemy_->Initialize(enemy_, &viewProjection_, enemyPosition, enemyDirection);
+
 	// 表示ブロックの生成
 	GenerateBlocks();
 
@@ -94,6 +106,9 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
+
+	// エネミーの更新
+	charaEnemy_->Update();
 
 	// スカイドームの更新
 	skydome_->Update();
@@ -138,11 +153,7 @@ void GameScene::Update() {
 	// デバッグ開始
 	if (input_->TriggerKey(DIK_TAB)) {
 		// デバッグカメラ有効フラグをトグル
-		if (isDebugCameraActive_ == true) {
-			isDebugCameraActive_ = false;
-		} else {
-			isDebugCameraActive_ = true;
-		}
+		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 
 	// カメラの処理
@@ -163,7 +174,6 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
@@ -188,12 +198,13 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-
+	// エネミーの描画
+	charaEnemy_->Draw();
 	// 自キャラの描画
 	player_->Draw();
 
 	// スカイドームの描画
-	//skydome_->Draw();
+	// skydome_->Draw();
 
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
