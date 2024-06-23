@@ -9,6 +9,7 @@ struct CollisionMapInfo {
 	bool isCeiling = false; // 天井衝突フラグ
 	bool isLanding = false; // 着地フラグ
 	bool isWall = false;    // 壁接触フラグ
+	bool isRight = false;
 	Vector3 move;           // 移動量
 };
 
@@ -68,6 +69,11 @@ public:
 
 
 	void GroundDetection(CollisionMapInfo& info);
+
+	void LeftCollisionDetection(CollisionMapInfo& info);
+
+	void RightCollisionDetection(CollisionMapInfo& info);
+
 
 	/// <summary>
 	/// ③判定結果を反映して移動させる
