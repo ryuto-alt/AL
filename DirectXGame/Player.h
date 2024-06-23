@@ -62,6 +62,14 @@ public:
 	void MapCollisionDetection(CollisionMapInfo& info);
 
 	/// <summary>
+	/// ②マップ↓衝突
+	/// </summary>
+	void BottomDetection(CollisionMapInfo& info);
+
+
+	void GroundDetection(CollisionMapInfo& info);
+
+	/// <summary>
 	/// ③判定結果を反映して移動させる
 	/// </summary>
 	/// <param name="info"></param>
@@ -124,6 +132,9 @@ private:
 	static inline const float kLimitFallSpeed = 0.35f;
 	// ジャンプ初速（上方向）
 	static inline const float kJumpAcceleration = 0.5f;
+
+
+
 
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;

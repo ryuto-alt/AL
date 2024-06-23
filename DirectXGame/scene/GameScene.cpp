@@ -193,7 +193,7 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// スカイドームの描画
-	skydome_->Draw();
+	//skydome_->Draw();
 
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
