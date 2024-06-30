@@ -43,3 +43,9 @@ void Enemy::Move() {
 	// 例: 速度に基づいて位置を更新
 	worldTransform_.translation_ += velocity_;
 }
+
+bool Enemy::CheckCollisionWithPlayer(Player* player) {
+	// 簡易的な衝突判定（距離が近ければ衝突とする）
+	float distance = (worldTransform_.translation_ - player->GetWorldTransform()->translation_).Length();
+	return distance < 1.0f; // 適切な距離を設定
+}

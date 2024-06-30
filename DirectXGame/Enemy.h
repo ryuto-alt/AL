@@ -1,4 +1,5 @@
 #pragma once
+#include "Player.h"
 #include "VectorMath.h"
 #include <Model.h>
 #include <WorldTransform.h>
@@ -21,6 +22,8 @@ public:
 	/// ①移動
 	/// </summary>
 	void Move();
+
+	bool CheckCollisionWithPlayer(Player* player); // プレイヤーとの衝突判定メソッド
 
 private:
 	// ワールド変換データ

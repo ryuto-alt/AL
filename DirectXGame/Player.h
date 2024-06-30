@@ -10,7 +10,7 @@ struct CollisionMapInfo {
 	bool isLanding = false; // 着地フラグ
 	bool isWall = false;    // 壁接触フラグ
 	bool isRight = false;
-	Vector3 move;           // 移動量
+	Vector3 move; // 移動量
 };
 
 // 前方宣言
@@ -67,13 +67,11 @@ public:
 	/// </summary>
 	void BottomDetection(CollisionMapInfo& info);
 
-
 	void GroundDetection(CollisionMapInfo& info);
 
 	void LeftCollisionDetection(CollisionMapInfo& info);
 
 	void RightCollisionDetection(CollisionMapInfo& info);
-
 
 	/// <summary>
 	/// ③判定結果を反映して移動させる
@@ -103,6 +101,8 @@ public:
 	const Vector3& GetVelocity() { return velocity_; }
 
 	float Lerp(float a, float b, float t) { return a + t * (b - a); }
+
+	void OnHitByEnemy(); // 敵に当たったときに呼ばれるメソッド
 
 private:
 	// ワールド変換データ
@@ -138,9 +138,6 @@ private:
 	static inline const float kLimitFallSpeed = 0.35f;
 	// ジャンプ初速（上方向）
 	static inline const float kJumpAcceleration = 0.5f;
-
-
-
 
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;

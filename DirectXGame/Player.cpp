@@ -243,9 +243,7 @@ void Player::MapCollisionDetection(CollisionMapInfo& info) {
 	}
 }
 
-
 #pragma region 下方向
-
 
 // ②マップ衝突判定
 void Player::BottomDetection(CollisionMapInfo& info) {
@@ -325,6 +323,7 @@ void Player::GroundDetection(CollisionMapInfo& info) {
 		onGround_ = false;
 	}
 }
+
 #pragma region 左方向当たり判定
 // 左方向の衝突判定
 void Player::LeftCollisionDetection(CollisionMapInfo& info) {
@@ -371,8 +370,6 @@ void Player::LeftCollisionDetection(CollisionMapInfo& info) {
 #pragma region 右方向当たり判定
 // 右方向の衝突判定
 void Player::RightCollisionDetection(CollisionMapInfo& info) {
-
-	
 	// 右移動あり？
 	if (info.move.x <= 0.0f) {
 		return;
@@ -405,7 +402,7 @@ void Player::RightCollisionDetection(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + Vector3(info.move.x, 0, 0) + Vector3(kWidth / 2.0f, 0, 0));
 		// めり込み先ブロックの範囲矩形
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-		
+
 		info.move.x = std::max(0.0f, (rect.left - worldTransform_.translation_.x) - ((kWidth / 2.0f) + kBlank));
 		// 右壁に当たったことを記録する
 		info.isWall = true;
@@ -447,4 +444,8 @@ void Player::TurningControl() {
 		float interpolatedRotationY = Lerp(turnFirstRotationY_, destinationRotationY, t);
 		worldTransform_.rotation_.y = interpolatedRotationY;
 	}
+}
+
+void Player::OnHitByEnemy() {
+	velocity_.y = 1.0f; // 高くジャンプさせる
 }

@@ -110,6 +110,11 @@ void GameScene::Update() {
 	// エネミーの更新
 	charaEnemy_->Update();
 
+	// プレイヤーとエネミーの衝突判定
+	if (charaEnemy_->CheckCollisionWithPlayer(player_)) {
+		player_->OnHitByEnemy();
+	}
+
 	// スカイドームの更新
 	skydome_->Update();
 

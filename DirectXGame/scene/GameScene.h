@@ -90,8 +90,4 @@ private: // メンバ変数
 
 	// マップチップフィールド
 	MapChipField* mapChipField_;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
 };

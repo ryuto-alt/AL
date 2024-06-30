@@ -46,4 +46,6 @@ struct Vector3 final {
 		}
 		return *this;
 	}
+
+	float Length() const { return std::sqrt(x * x + y * y + z * z); }
 };
