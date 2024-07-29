@@ -1,5 +1,27 @@
 #include "Enemy.h"
-#include <numbers>
+#include <vector>
+
+std::vector<Enemy> enemies(10); // エネミーの数を10体に増やす
+
+void InitializeEnemies(Model* model, ViewProjection* viewProjection, const std::vector<Vector3>& basePosition) {
+	for (int i = 0; i < enemies.size(); i++) {
+		Vector3 position = basePosition[0]; // 基本となる初期位置を取得
+		position.x += i * 10.0f;            // 各エネミーのx座標をずらす
+		enemies[i].Initialize(model, viewProjection, position);
+	}
+}
+
+void UpdateEnemies() {
+	for (Enemy& enemy : enemies) {
+		enemy.Update();
+	}
+}
+
+void DrawEnemies() {
+	for (Enemy& enemy : enemies) {
+		enemy.Draw();
+	}
+}
 
 void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	// モデル変数に記録
@@ -42,7 +64,7 @@ void Enemy::Draw() {
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数
 	Vector3 worldPos;
-	//  ワールド行列の平行移動成分を取得(ワールド座標)
+	// ワールド行列の平行移動成分を取得(ワールド座標)
 	worldPos.x = worldTransform_.translation_.x;
 	worldPos.y = worldTransform_.translation_.y;
 	worldPos.z = worldTransform_.translation_.z;
