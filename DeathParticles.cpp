@@ -1,15 +1,14 @@
 #include "DeathParticles.h"
 #include <algorithm>
 
-void DeathParticles::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position)
-{
+void DeathParticles::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	// モデルを初期化
 	model_ = model;
 	// ビュープロジェクションを初期化
 	viewProjection_ = viewProjection;
 
 	objectColor_.Initialize();
-	color_ = { 1,1,1,1 };
+	color_ = {1, 1, 1, 1};
 
 	// ワールド変換の初期化
 	for (auto& worldTransform : worldTransform_) {
@@ -18,9 +17,8 @@ void DeathParticles::Initialize(Model* model, ViewProjection* viewProjection, co
 	}
 }
 
-void DeathParticles::Update()
-{
-	//カウンターを1フレーム分の秒数進める
+void DeathParticles::Update() {
+	// カウンターを1フレーム分の秒数進める
 	counter_ += 1.0f / 60.0f;
 	// 存続時間の上限に達したら
 	if (counter_ >= kDuration) {
@@ -31,7 +29,7 @@ void DeathParticles::Update()
 
 	for (uint32_t i = 0; i < 8; ++i) {
 		// 基本となるベクトル
-		Vector3 velocity = { kSpeed,0.0f,0.0f };
+		Vector3 velocity = {kSpeed, 0.0f, 0.0f};
 		// 回転角を計算する
 		float angle = kAngleUint * i;
 		// Z軸まわり回転行列
@@ -54,18 +52,16 @@ void DeathParticles::Update()
 		worldTransform.UpdateMatrix();
 	}
 
-
 	// 終了ならなにもしない
 	if (isFinished_) {
 		return;
 	}
 }
 
-void DeathParticles::Draw()
-{
+void DeathParticles::Draw() {
 	// モデルの描画
 	for (const auto& worldTransform : worldTransform_) {
-		model_->Draw(worldTransform, *viewProjection_,&objectColor_);
+		model_->Draw(worldTransform, *viewProjection_, &objectColor_);
 	}
 
 	// 終了ならなにもしない

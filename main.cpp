@@ -53,7 +53,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	input = Input::GetInstance();
 	input->Initialize();
 
-
 	// テクスチャマネージャの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	TextureManager::Load("white1x1.png");
@@ -92,10 +91,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 入力関連の毎フレーム処理
 		input->Update();
 		// ゲームシーンの毎フレーム処理
-		//gameScene->Update();
+		// gameScene->Update();
 
-		//titleScene->Update();
-		// シーン切り替え
+		// titleScene->Update();
+		//  シーン切り替え
 		ChangeScene();
 		// 現在シーン更新
 		UpdataScene();
@@ -107,9 +106,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画開始
 		dxCommon->PreDraw();
 		// ゲームシーンの描画
-		//gameScene->Draw();
+		// gameScene->Draw();
 		// タイトルシーンの描画
-		//titleScene->Draw();
+		// titleScene->Draw();
 		// 現在シーンの描画
 		DrawScene();
 		// 軸表示の描画
@@ -137,10 +136,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	return 0;
 }
 
-void ChangeScene()
-{
-	switch (scene)
-	{
+void ChangeScene() {
+	switch (scene) {
 	case Scene::kTitle:
 		if (titleScene->IsFinished()) {
 			// シーン変更
@@ -168,10 +165,8 @@ void ChangeScene()
 	}
 }
 
-void UpdataScene()
-{
-	switch (scene)
-	{
+void UpdataScene() {
+	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Update();
 		break;
@@ -181,10 +176,8 @@ void UpdataScene()
 	}
 }
 
-void DrawScene()
-{
-	switch (scene)
-	{
+void DrawScene() {
+	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Draw();
 		break;

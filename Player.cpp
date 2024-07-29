@@ -16,7 +16,6 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / -2.0f;
 
-
 	// 引数の内容をメンバ変数に記録
 	model_ = model;
 	// textureHandle_ = textureHandle;
@@ -67,7 +66,6 @@ void Player::Draw() {
 }
 
 void Player::MoveInput() {
-
 
 	// 移動入力
 	// 接地状態
@@ -125,22 +123,19 @@ void Player::MoveInput() {
 			velocity_.z += 0;
 			// 空中
 		}
-	}else {
+	} else {
 		// 落下速度
 		velocity_.x += 0;
 		velocity_.y += -kGravityAcceleration;
 		velocity_.z += 0;
 		// 落下速度制限
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
-
 	}
 
 	//// 移動
 	// worldTransform_.translation_.x += velocity_.x;
 	// worldTransform_.translation_.y += velocity_.y;
 	// worldTransform_.translation_.z += velocity_.z;
-
-	
 }
 
 void Player::CeilingContact(const CollisionMapInfo& info) {
@@ -158,7 +153,7 @@ void Player::SwitchGrandState(const CollisionMapInfo& info) {
 		if (velocity_.y > 0.0f) {
 			// 空中状態の移行
 			onGround_ = false;
-		}else {
+		} else {
 			std::array<Vector3, kNumCorner> positonsNew;
 
 			for (uint32_t i = 0; i < positonsNew.size(); ++i) {
@@ -170,7 +165,7 @@ void Player::SwitchGrandState(const CollisionMapInfo& info) {
 
 			// 左下点の判定
 			MapChipField::IndexSet indexSet;
-			indexSet =mapChipField_->GetMapChipIndexSetByPosition(positonsNew[kLeftBottom] + Vector3(0, -0.1f, 0));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positonsNew[kLeftBottom] + Vector3(0, -0.1f, 0));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::lBlock) {
 				hit = true;
@@ -189,8 +184,7 @@ void Player::SwitchGrandState(const CollisionMapInfo& info) {
 				onGround_ = false;
 			}
 		}
-	}
-	else {
+	} else {
 		// 着地
 		if (info.LandingFlag) {
 			// 摩擦で横方向速度が減衰する
@@ -290,10 +284,9 @@ void Player::MapCollisionDown(CollisionMapInfo& info) {
 	if (hit) {
 		MapChipField::IndexSet indexSetNow;
 		indexSetNow = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + Vector3(0, -kHeight / 2.0f, 0));
-		if (indexSetNow.yIndex != indexSet.yIndex)
-		{
+		if (indexSetNow.yIndex != indexSet.yIndex) {
 			// めり込みを排除する方向に移動量を設定する
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.movement_ + Vector3(0, -kHeight / 2.0f,0));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.movement_ + Vector3(0, -kHeight / 2.0f, 0));
 			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			info.movement_.y = std::min(0.0f, (rect.top - worldTransform_.translation_.y) + ((kHeight / 2.0f) + kBlank));
 			// 地面に当たったことを記録する
@@ -331,7 +324,8 @@ void Player::MapCollisionLeft(CollisionMapInfo& info) {
 	if (hit) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		info.movement_.x = std::max(0.0f, (rect.right - worldTransform_.translation_.x) - (kWidth / 2.0f + kBlank));
-	}}
+	}
+}
 
 void Player::MapCollisionRight(CollisionMapInfo& info) {
 	// 移動後の4つの角の座標
@@ -398,8 +392,7 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
-Vector3 Player::GetWorldPosition()
-{
+Vector3 Player::GetWorldPosition() {
 	// ワールド座標を入れる変数
 	Vector3 worldPos;
 	//  ワールド行列の平行移動成分を取得(ワールド座標)
@@ -410,22 +403,20 @@ Vector3 Player::GetWorldPosition()
 	return worldPos;
 }
 
-AABB Player::GetAABB()
-{
+AABB Player::GetAABB() {
 	Vector3 worldPos = GetWorldPosition();
 
 	AABB aabb;
 
-	aabb.min = { worldPos.x - kWidth / 2.0f,worldPos.y - kHeight / 2.0f,worldPos.z - kWidth / 2.0f };
-	aabb.max = { worldPos.x + kWidth / 2.0f,worldPos.y + kHeight / 2.0f,worldPos.z + kWidth / 2.0f };
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
 
 	return aabb;
 }
 
-void Player::OnCollision(const Enemy* enemy)
-{
+void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	// ジャンプ開始
-	//velocity_ += Vector3(firstSpeed);
+	// velocity_ += Vector3(firstSpeed);
 	isDead_ = true;
 }

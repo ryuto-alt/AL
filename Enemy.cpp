@@ -1,8 +1,7 @@
 #include "Enemy.h"
 #include <numbers>
 
-void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position)
-{
+void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	// モデル変数に記録
 	model_ = model;
 	viewProjection_ = viewProjection;
@@ -13,14 +12,13 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 	worldTransform_.rotation_.y = 3.14f / 2.0f;
 
 	// 速度を設定する
-	velocity_ = { -kWalkSpeed,0,0 };
+	velocity_ = {-kWalkSpeed, 0, 0};
 
 	// 時間を設定する
 	walkTimer_ = 0.0f;
 }
 
-void Enemy::Update()
-{
+void Enemy::Update() {
 	// 移動
 	worldTransform_.translation_ += velocity_;
 
@@ -36,14 +34,12 @@ void Enemy::Update()
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Draw()
-{
+void Enemy::Draw() {
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, *viewProjection_);
 }
 
-Vector3 Enemy::GetWorldPosition()
-{
+Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数
 	Vector3 worldPos;
 	//  ワールド行列の平行移動成分を取得(ワールド座標)
@@ -54,20 +50,15 @@ Vector3 Enemy::GetWorldPosition()
 	return worldPos;
 }
 
-AABB Enemy::GetAABB()
-{
+AABB Enemy::GetAABB() {
 	Vector3 worldPos = GetWorldPosition();
 
 	AABB aabb;
 
-	aabb.min = { worldPos.x - kWidth / 2.0f,worldPos.y - kHeight / 2.0f,worldPos.z - kWidth / 2.0f };
-	aabb.max = { worldPos.x + kWidth / 2.0f,worldPos.y + kHeight / 2.0f,worldPos.z + kWidth / 2.0f };
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
 
 	return aabb;
 }
 
-void Enemy::OnCollision(const Player* player)
-{
-	(void)player;
-}
-
+void Enemy::OnCollision(const Player* player) { (void)player; }

@@ -1,30 +1,27 @@
-#include <map>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <cassert>
 #include "mapChipField.h"
+#include <cassert>
+#include <fstream>
+#include <map>
+#include <sstream>
+#include <string>
 
 namespace {
 
-	std::map<std::string, MapChipType> mapChipTable = {
-		{"0",MapChipType::kBlank},
-		{"1",MapChipType::lBlock},
-	};
+std::map<std::string, MapChipType> mapChipTable = {
+    {"0", MapChipType::kBlank},
+    {"1", MapChipType::lBlock},
+};
 
 }
 
-
-MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position)
-{
+MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
 	IndexSet indexSet = {};
 	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2) / kBlockWidth);
 	indexSet.yIndex = kNumBlockVirtical - 1 - static_cast<uint32_t>(position.y + kBlockHeight / 2 / kBlockHeight);
 	return indexSet;
 }
 
-MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex)
-{
+MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
 	Vector3 center = GetMapChipPositionByIndex(xIndex, yIndex);
 
 	Rect rect;
@@ -36,8 +33,7 @@ MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex
 	return rect;
 }
 
-void MapChipField::ResetMapChipData()
-{
+void MapChipField::ResetMapChipData() {
 	// マップチップデータをリセット
 	mapChipData_.data.clear();
 	mapChipData_.data.resize(kNumBlockVirtical);
@@ -46,14 +42,11 @@ void MapChipField::ResetMapChipData()
 	}
 }
 
-
-
-void MapChipField::LoadMapChipCsv(const std::string& filePath)
-{
+void MapChipField::LoadMapChipCsv(const std::string& filePath) {
 	// マップチップデータをリセット
 	ResetMapChipData();
 
-	//ファイルを開く
+	// ファイルを開く
 	std::ifstream file;
 	file.open(filePath);
 	assert(file.is_open());
@@ -84,32 +77,19 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath)
 	}
 }
 
-MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex)
-{
+MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
 	if (xIndex < 0 || kNumBlockHorizontal - 1 < xIndex) {
 		return MapChipType::kBlank;
 	}
 	if (yIndex < 0 || kNumBlockVirtical - 1 < yIndex) {
 		return MapChipType::kBlank;
 	}
-	
+
 	return mapChipData_.data[yIndex][xIndex];
 }
 
-Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex)
-{
-	
-	return Vector3(kBlockWidth*xIndex,kBlockHeight*(kNumBlockVirtical-1-yIndex),0);
-}
+Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVirtical - 1 - yIndex), 0); }
 
-uint32_t MapChipField::GetNumBlockVirtical() const
-{
-	return kNumBlockVirtical;
-}
+uint32_t MapChipField::GetNumBlockVirtical() const { return kNumBlockVirtical; }
 
-uint32_t MapChipField::GetNumBlockHorizontal() const
-{
-	return kNumBlockHorizontal;
-}
-
-
+uint32_t MapChipField::GetNumBlockHorizontal() const { return kNumBlockHorizontal; }

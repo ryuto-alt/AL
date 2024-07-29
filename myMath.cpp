@@ -86,7 +86,6 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	return result;
 }
 
-
 // 行列の掛け算
 Matrix4x4 MatrixMultiply(Matrix4x4& m1, Matrix4x4& m2) {
 

@@ -1,8 +1,8 @@
 #include "Skydome.h"
 
-void Skydome::Initialize(Model *model, ViewProjection* viewProjection) { 
+void Skydome::Initialize(Model* model, ViewProjection* viewProjection) {
 
-	worldTransform_.Initialize(); 
+	worldTransform_.Initialize();
 	model_ = model;
 	viewProjection_ = viewProjection;
 }

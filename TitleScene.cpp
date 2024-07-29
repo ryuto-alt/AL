@@ -1,8 +1,7 @@
 #include "TitleScene.h"
 #include <numbers>
 
-void TitleScene::Initialize()
-{
+void TitleScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	titlemodel_ = Model::CreateFromOBJ("title", true);
 	titleWorldTransform_.Initialize();
@@ -10,11 +9,10 @@ void TitleScene::Initialize()
 	Timer_ = 0.0f;
 
 	// タイトルを近づける
-	titleWorldTransform_.translation_ = { 0.0f, 1.0f, -40.0f };  // z値を調整して近づける
+	titleWorldTransform_.translation_ = {0.0f, 1.0f, -40.0f}; // z値を調整して近づける
 }
 
-void TitleScene::Update()
-{
+void TitleScene::Update() {
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		finished_ = true;
 	}
@@ -27,8 +25,7 @@ void TitleScene::Update()
 	titleWorldTransform_.UpdateMatrix();
 }
 
-void TitleScene::Draw()
-{
+void TitleScene::Draw() {
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 	Model::PreDraw(commandList);
